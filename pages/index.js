@@ -17,6 +17,32 @@ const DUMMY_MEETUPS = [
   },
 ]
 
-export default function HomePage() {
-  return <MeetupList meetups={DUMMY_MEETUPS}/>
+export default function HomePage(props) {
+  return <MeetupList meetups={props.meetups}/>
+}
+
+// export function getServerSideProps(context) {
+// const req = context.req
+// const res = context.res
+
+// return {
+//   props: {
+//     meetups: DUMMY_MEETUPS
+//   }
+// }
+// }
+
+// app.post('/', (req: Request, res: Response) => {
+//   req.body
+//   res.sendStatus(200)
+// })
+
+export function getStaticProps() {
+  // fetch data from an API
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS
+    },
+    revalidate: 3600
+  }
 }
