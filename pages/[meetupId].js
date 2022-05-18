@@ -1,15 +1,15 @@
 import { MeetupDetail } from "../components/meetups/MeetupDetail";
 
-export default function MeetupDetails(props) {
-  return <MeetupDetail title={props.meetupData.title}
-  image={props.meetupData.image}
-  address= {props.meetupData.address}
-  description= {props.meetupData.description}  />
+export default function MeetupDetails({ meetupData = {} }) {
+  return <MeetupDetail title={meetupData.title}
+  image={meetupData.image}
+  address= {meetupData.address}
+  description= {meetupData.description}  />
 }
 
 export async function getStaticPaths() {
   return {
-    fallback: false,
+    fallback: 'blocking',
     paths: [
       {
         params: {
@@ -31,15 +31,29 @@ export async function getStaticProps(context) {
 
   console.log('meetupId', meetupId)
 
+
+  const response = await fetch(`${process.env.REACT_APP_BASE_URL}/meetups/${meetupId}.json`)
+  
+  const data = await response.json();
+
+  console.log('data', data)
+
+
+
+  if (!response.ok) {
+    throw new Error(data.message || "Could not fetch meetup.");
+  }
+
+  const loadedMeetup = {
+    id: meetupId,
+    ...data
+  };
+
+  console.log('loadedMeetup', loadedMeetup)
+
   return {
     props: {
-      meetupData: {
-        id: meetupId,
-        title:  "First meetup",
-        image: "https://images.unsplash.com/photo-1610197361600-33a3a5073cad?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
-        address: "Saint Petersburg, Petergof",
-        description: "Some people meet at bar"
-      }
+      meetupData: loadedMeetup
     }
   }
 }

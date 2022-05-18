@@ -5,7 +5,7 @@ const DUMMY_MEETUPS = [
     id: 'm1',
     title: "First meetup",
     image: "https://images.unsplash.com/photo-1610197361600-33a3a5073cad?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
-    address: "Saint Petersburg, Petergof",
+    address: "Saint Petersburg, Peterhof",
     description: "Some people meet at bar"
   },
   {
@@ -37,11 +37,30 @@ export default function HomePage(props) {
 //   res.sendStatus(200)
 // })
 
-export function getStaticProps() {
+export async function getStaticProps() {
   // fetch data from an API
+  const response = await fetch(`${process.env.REACT_APP_BASE_URL}/meetups.json`)
+  
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || "Could not fetch meetups.");
+  }
+
+  const transformedMeetups = [];
+
+    for (const key in data) {
+      const quoteObj = {
+        id: key,
+        ...data[key]
+      };
+
+      transformedMeetups.push(quoteObj);
+    }
+
+
   return {
     props: {
-      meetups: DUMMY_MEETUPS
+      meetups: transformedMeetups
     },
     revalidate: 3600
   }
