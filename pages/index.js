@@ -1,24 +1,28 @@
+import { MongoClient } from "mongodb";
+
 import MeetupList from "../components/meetups/MeetupList";
 
 const DUMMY_MEETUPS = [
   {
-    id: 'm1',
+    id: "m1",
     title: "First meetup",
-    image: "https://images.unsplash.com/photo-1610197361600-33a3a5073cad?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
+    image:
+      "https://images.unsplash.com/photo-1610197361600-33a3a5073cad?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
     address: "Saint Petersburg, Peterhof",
     description: "Some people meet at bar"
   },
   {
-    id: 'm2',
+    id: "m2",
     title: "Second meetup",
-    image: "https://dn1.vtomske.ru/a/b5cb6aab1353b239a4c576e72d8559b9_lg9aa2de.jpg",
+    image:
+      "https://dn1.vtomske.ru/a/b5cb6aab1353b239a4c576e72d8559b9_lg9aa2de.jpg",
     address: "Tomsk",
     description: "Some people meet at big supermarket"
-  },
-]
+  }
+];
 
 export default function HomePage(props) {
-  return <MeetupList meetups={props.meetups}/>
+  return <MeetupList meetups={props.meetups} />;
 }
 
 // export function getServerSideProps(context) {
@@ -37,31 +41,56 @@ export default function HomePage(props) {
 //   res.sendStatus(200)
 // })
 
+// export async function getStaticProps() {
+//   // fetch data from an API
+//   const response = await fetch(
+//     `${process.env.REACT_APP_BASE_URL}/meetups.json`
+//   );
+
+//   const data = await response.json();
+//   if (!response.ok) {
+//     throw new Error(data.message || "Could not fetch meetups.");
+//   }
+
+//   const transformedMeetups = [];
+
+//   for (const key in data) {
+//     const quoteObj = {
+//       id: key,
+//       ...data[key]
+//     };
+
+//     transformedMeetups.push(quoteObj);
+//   }
+
+//   return {
+//     props: {
+//       meetups: transformedMeetups
+//     },
+//     revalidate: 3600
+//   };
+// }
+
 export async function getStaticProps() {
-  // fetch data from an API
-  const response = await fetch(`${process.env.REACT_APP_BASE_URL}/meetups.json`)
-  
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.message || "Could not fetch meetups.");
-  }
+  const client = await MongoClient.connect(process.env.REACT_APP_MONGO_URL);
 
-  const transformedMeetups = [];
+  const db = client.db();
 
-    for (const key in data) {
-      const quoteObj = {
-        id: key,
-        ...data[key]
-      };
+  const meetupsCollection = db.collection("meetups");
 
-      transformedMeetups.push(quoteObj);
-    }
+  const meetups = await meetupsCollection.find().toArray();
 
+  client.close();
 
   return {
     props: {
-      meetups: transformedMeetups
+      meetups: meetups.map((meetup) => ({
+        title: meetup.title,
+        address: meetup.address,
+        image: meetup.image,
+        id: meetup._id.toString()
+      }))
     },
     revalidate: 3600
-  }
+  };
 }
