@@ -1,20 +1,27 @@
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
+import Image from "next/image";
 
-import Card from '../ui/Card';
-import classes from './MeetupItem.module.css';
+import Card from "../ui/Card";
+import classes from "./MeetupItem.module.css";
 
 function MeetupItem(props) {
-  const router = useRouter()
+  const router = useRouter();
 
   function showDetailsHandler() {
-    router.push('/' + props.id)
+    router.push("/" + props.id);
   }
 
   return (
     <li className={classes.item}>
       <Card>
         <div className={classes.image}>
-          <img src={props.image} alt={props.title} />
+          {/* <img src={props.image} alt={props.title} /> */}
+          <Image
+            src={props.image}
+            alt={props.title}
+            layout="fill"
+            objectFit="cover"
+          />
         </div>
         <div className={classes.content}>
           <h3>{props.title}</h3>
