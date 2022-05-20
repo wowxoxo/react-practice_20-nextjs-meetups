@@ -38,7 +38,7 @@ async function handler(req, res) {
 
     client.close();
 
-    res.status(201).send("Meetup inserted!");
+    res.status(201).json({ status: "Meetup inserted!" });
   }
 }
 
