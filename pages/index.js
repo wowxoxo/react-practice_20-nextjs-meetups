@@ -1,28 +1,19 @@
 import { MongoClient } from "mongodb";
+import { Fragment } from "react";
+import Head from "next/head";
 
 import MeetupList from "../components/meetups/MeetupList";
 
-const DUMMY_MEETUPS = [
-  {
-    id: "m1",
-    title: "First meetup",
-    image:
-      "https://images.unsplash.com/photo-1610197361600-33a3a5073cad?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80",
-    address: "Saint Petersburg, Peterhof",
-    description: "Some people meet at bar"
-  },
-  {
-    id: "m2",
-    title: "Second meetup",
-    image:
-      "https://dn1.vtomske.ru/a/b5cb6aab1353b239a4c576e72d8559b9_lg9aa2de.jpg",
-    address: "Tomsk",
-    description: "Some people meet at big supermarket"
-  }
-];
-
 export default function HomePage(props) {
-  return <MeetupList meetups={props.meetups} />;
+  return (
+    <Fragment>
+      <Head>
+        <title>React Meetups</title>
+        <meta name="description" content="Browse a huge list of out meetups" />
+      </Head>
+      <MeetupList meetups={props.meetups} />
+    </Fragment>
+  );
 }
 
 // export function getServerSideProps(context) {
@@ -91,6 +82,6 @@ export async function getStaticProps() {
         id: meetup._id.toString()
       }))
     },
-    revalidate: 3600
+    revalidate: 10
   };
 }
