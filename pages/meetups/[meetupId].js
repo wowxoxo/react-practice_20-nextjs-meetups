@@ -2,7 +2,7 @@ import { MongoClient, ObjectId } from "mongodb";
 import { Fragment } from "react";
 import Head from "next/head";
 
-import { MeetupDetail } from "../components/meetups/MeetupDetail";
+import { MeetupDetail } from "../../components/meetups/MeetupDetail";
 
 export default function MeetupDetails({ meetupData }) {
   return (
