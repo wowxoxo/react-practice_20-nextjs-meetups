@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Fragment } from "react";
 import Card from "../../components/ui/Card";
 import { getAllPostIds, getPostData } from "../../lib/postsService";
+import utilStyles from "../../styles/utils.module.css";
 
 export default function PostDetailPage({ postData }) {
   console.log("postData", postData);
@@ -16,10 +17,9 @@ export default function PostDetailPage({ postData }) {
         <title>{postData.title}</title>
         <meta name="description" content={postData.excerpt} />
       </Head>
-      <Card>
-        {postData.title}
-        <br />
-        {postData.date}
+      <Card className={`${utilStyles.padding20px}`}>
+        <h1 className={`${utilStyles.headingLg}`}>{postData.title}</h1>
+        <date>{postData.date}</date>
         <br />
         <div style={{ position: "relative", height: "300px" }}>
           <Image
